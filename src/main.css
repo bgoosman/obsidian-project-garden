@@ -1,0 +1,11 @@
+.project-garden {
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+}
+
+.project-garden {
+  figure {
+    margin: 0;
+  }
+}

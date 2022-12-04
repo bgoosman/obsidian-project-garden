@@ -1,0 +1,64 @@
+/*
+<div class="GooseMd">
+  <div class="flex">
+    <div class="card">
+      <img src="${image}" class="card-img-top" />
+      <div class="card-body">
+        <h2>${title}</h2>
+        <div class="card-content">${todo}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+https://cssgradient.io/
+*/
+
+.GooseMd {
+  padding: 16px;
+
+  .flex {
+    display: flex;
+  }
+
+  .flex-wrap {
+    flex-wrap: wrap;
+  }
+
+  .nothing-to-do {
+    filter: grayscale(1) opacity(0.25);
+  }
+
+  .card {
+    max-width: 300px;
+    margin: 4px;
+    padding: 0;
+    border: 1px solid #C0C2C9;
+    border-radius: 8px;
+    overflow: hidden;
+
+    >a {
+      width: 100%;
+    }
+
+    .card-img-top {
+      width: 100%;
+      height: 135px;
+      object-fit: cover;
+      object-position: left;
+    }
+
+    .card-body {
+      padding: 16px;
+
+      h1 {
+        color: var(--interactive-accent);
+        margin: 0 0 8px 0;
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      .card-content {}
+    }
+  }
+}

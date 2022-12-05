@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-project-garden",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "See all your projects in one place",
 	"main": "main.js",
 	"scripts": {

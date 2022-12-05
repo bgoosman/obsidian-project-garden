@@ -4,15 +4,16 @@
 	"description": "See all your projects in one place",
 	"main": "main.js",
 	"scripts": {
-		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"build:dev": "node esbuild.config.mjs",
-		"build:css-old": "npx tailwindcss -i ./src/main.css -o ./dist/styles.css",
+		"build": "npm-run-all --parallel build:js:production build:css build:manifest",
+		"build:manifest": "cp manifest.json dist/manifest.json",
+		"build:js:production": "node esbuild.config.mjs production",
+		"build:js:dev": "node esbuild.config.mjs",
 		"build:css": "yarn postcss ./src/main.css -o ./dist/styles.css",
 		"version": "node version-bump.mjs && git add manifest.json versions.json",
 		"deploy": "cp dist/main.js dist/styles.css manifest.json \"/Users/admin/Library/Mobile Documents/iCloud~md~obsidian/Documents/Everything/.obsidian/plugins/obsidian-project-garden\"",
 		"watch:deploy": "chokidar dist/main.js dist/styles.css manifest.json -c \"yarn deploy\"",
 		"watch:css": "chokidar \"src/**/*.{tsx,css}\" -c \"yarn build:css\"",
-		"watch:dev": "npm-run-all --parallel build:dev watch:css"
+		"watch:js": "npm-run-all --parallel build:js:dev watch:css"
 	},
 	"keywords": [],
 	"author": "",

@@ -13,7 +13,8 @@
 		"deploy": "cp dist/main.js dist/styles.css manifest.json \"/Users/admin/Library/Mobile Documents/iCloud~md~obsidian/Documents/Everything/.obsidian/plugins/obsidian-project-garden\"",
 		"watch:deploy": "chokidar dist/main.js dist/styles.css manifest.json -c \"yarn deploy\"",
 		"watch:css": "chokidar \"src/**/*.{tsx,css}\" -c \"yarn build:css\"",
-		"watch:js": "npm-run-all --parallel build:js:dev watch:css"
+		"watch:js": "yarn run build:js:dev",
+		"watch": "npm-run-all --parallel watch:js watch:css watch:deploy"
 	},
 	"keywords": [],
 	"author": "",
@@ -40,12 +41,16 @@
 	},
 	"dependencies": {
 		"@deanc/esbuild-plugin-postcss": "^1.0.2",
+		"@heroicons/react": "^2.0.13",
+		"@types/luxon": "^3.1.0",
 		"autoprefixer": "^10.4.13",
 		"classnames": "^2.3.2",
 		"daisyui": "^2.42.1",
+		"luxon": "^3.1.1",
 		"overmind": "^28.0.2",
 		"overmind-react": "^29.0.2",
 		"postcss": "^8.4.19",
+		"rambda": "^7.4.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"theme-change": "^2.2.0"

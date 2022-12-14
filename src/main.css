@@ -8,4 +8,8 @@
   figure {
     margin: 0;
   }
+
+  .card {
+    padding: 0;
+  }
 }

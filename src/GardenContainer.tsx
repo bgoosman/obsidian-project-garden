@@ -1,25 +1,22 @@
 import { App } from "obsidian";
 import * as React from "react";
 import { ProjectCard, ProjectCardProps } from "./components/ProjectCard";
-import { Page, Task } from "./types";
-import {
-	cmpDateAsc,
-	daysTil,
-	getTaskDate,
-	MAX_TIMESTAMP,
-} from "./dateTime";
-import { cmpPriorityAsc, getTaskPriority } from "./task";
+import { cmpDateAsc, daysTil, getTaskDate, MAX_TIMESTAMP } from "./dateTime";
 import logoUrl from "./static/garden-transparent.png";
+import { cmpPriorityAsc, getTaskPriority } from "./task";
+import { OpenPath, Page, Task } from "./types";
 
 export type AppProps = {
 	app: App;
+	openPath: OpenPath;
+	onClickProject: (file: Page) => void;
 };
 
 const Logo = ({ className }: { className?: string }) => (
-  <img src={logoUrl} alt="Garden" className={className} />
+	<img src={logoUrl} alt="Garden" className={className} />
 );
 
-export const GardenContainer = ({ app }: AppProps) => {
+export const GardenContainer = ({ app, openPath, onClickProject }: AppProps) => {
 	const dv = app.plugins.plugins.dataview.api;
 	const cardProps = Array.from(dv.pages('"Projects"')).map(
 		(page: Page): ProjectCardProps => {
@@ -61,6 +58,9 @@ export const GardenContainer = ({ app }: AppProps) => {
 				firstDueDate,
 				hasDueDate,
 				daysTilDue,
+				openPath,
+				onClickProject,
+				app,
 			};
 			return props;
 		}
@@ -84,18 +84,21 @@ export const GardenContainer = ({ app }: AppProps) => {
 		<div className="project-garden" data-theme="cyberpunk">
 			<div className="navbar bg-base-100 mb-4 flex-grow-0">
 				<div className="flex-1">
-          <Logo className="mr-4 h-14 overflow-hidden rounded-2xl shadow-sm shadow-cyan-500/50" />
+					<Logo className="mr-4 h-14 overflow-hidden rounded-2xl shadow-sm shadow-cyan-500/50" />
 					<h1 className="text-4xl">project garden</h1>
 				</div>
 			</div>
 			<div className="flex flex-wrap">
-				{cardProps.map((props) => (
-					<ProjectCard
-						className="mr-2 mb-2"
-						key={props.page.file.link.path}
-						{...props}
-					/>
-				))}
+				{cardProps.map((props) => {
+					const key = props.page.file.link.path;
+					return (
+						<ProjectCard
+							className="mr-2 mb-3"
+							key={key}
+							{...props}
+						/>
+					);
+				})}
 			</div>
 		</div>
 	);

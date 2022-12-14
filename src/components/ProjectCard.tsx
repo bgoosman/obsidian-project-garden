@@ -114,10 +114,10 @@ export const ProjectCard = ({
 					)}
 				>
 					{projectPath.slice(1).map((x, i) => (
-						<>
+						<span key={x}>
 							{i > 0 && <ChevronDoubleRightIcon className="inline-block w-3 h-3 mx-2" />}
 							{x}
-						</>
+						</span>
 					))}
 				</h1>
 				<ProjectStatusBadge

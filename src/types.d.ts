@@ -33,9 +33,6 @@ export type Page = {
 	background: string;
 };
 
-export type OnClickProject = (page: Page) => void;
-export type OpenPath = (path: PageLink) => void;
-
 declare module "obsidian" {
 	interface App {
 		plugins: {

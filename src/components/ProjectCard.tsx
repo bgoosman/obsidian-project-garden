@@ -1,33 +1,31 @@
 import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
-import { App, Vault } from "obsidian";
 import * as React from "react";
-import { OnClickProject, OpenPath, Page, PageLink, Task } from "../types";
+import { Page, PageLink, Task } from "../types";
+import { openPage } from "./GardenView";
 import { ProjectStatusBadge } from "./ProjectStatusBadge";
 
 export type ProjectCardProps = {
+	areThereTasks: boolean;
 	className?: string;
-	page: Page;
-	topTasks: Task[];
-	hasTasks: boolean;
+	daysTilDue: number;
 	firstTaskDate: Date;
 	firstDueDate: Date;
 	hasDueDate: boolean;
-	daysTilDue: number;
+	hasTasks: boolean;
+	image?: string;
 	maxDaysTilDue?: number;
-	onClickProject: OnClickProject;
-	openPath: OpenPath;
-	app: App;
+	page: Page;
+	projectPath: string[];
+	topTasks: Task[];
 };
 
 type TaskItemProps = {
 	projectPath: string[];
 	task: Task;
-	openPath: OpenPath;
-	app: App;
 };
 
-const TaskItem = ({ openPath, projectPath, task, app }: TaskItemProps) => {
+const TaskItem = ({ projectPath, task }: TaskItemProps) => {
 	const taskText = task.text;
 	const taskTextWithoutTags = taskText.replace(/#\w+/g, "").trim();
 	const taskTextWithoutTagsAndDates = taskTextWithoutTags.replace(/\d{4}-\d{2}-\d{2}/g, "").trim();
@@ -47,11 +45,11 @@ const TaskItem = ({ openPath, projectPath, task, app }: TaskItemProps) => {
 			className={classNames("cursor-pointer")}
 			style={{
 				color: "var(--link-external-color)",
-				opacity: doesPathExist ? 1 : 0.5,
+				opacity: doesPathExist ? 1 : 0.7,
 				textDecorationLine: "var(--link-external-decoration)",
 				filter: "var(--link-external-filter)",
 			}}
-			onClick={() => openPath(pageLink)}
+			onClick={() => openPage(pageLink)}
 		>
 			{taskTextWithoutTagsAndDatesAndDateIconsAndPriorityIconsAndBrackets}
 		</span>
@@ -59,22 +57,14 @@ const TaskItem = ({ openPath, projectPath, task, app }: TaskItemProps) => {
 };
 
 export const ProjectCard = ({
+	areThereTasks,
 	className,
-	page,
-	topTasks,
 	daysTilDue,
-	openPath,
-	onClickProject,
-	app,
+	image,
+	page,
+	projectPath,
+	topTasks,
 }: ProjectCardProps) => {
-	const {
-		file: {
-			link: { path },
-			frontmatter: { image },
-		},
-	} = page;
-	const projectPath = path.split("/").map((p) => p.replace(".md", ""));
-	const areThereTasks = topTasks.length > 0;
 
 	let borderColor = "green";
 	if (daysTilDue <= 3) {
@@ -88,6 +78,8 @@ export const ProjectCard = ({
 		backgroundStyle = {
 			backgroundImage: `url(${image})`,
 		};
+	} else {
+		backgroundStyle.background = `#d3e7e4`;
 	}
 
 	return (
@@ -106,11 +98,11 @@ export const ProjectCard = ({
 					"card-img-top w-full h-48 bg-cover bg-center bg-no-repeat py-6 px-8 border-b-2 border-slate-300",
 					"cursor-pointer"
 				)}
-				onClick={() => onClickProject(page)}
+				onClick={() => openPage(page.file.link as unknown as PageLink)}
 			>
 				<h1
 					className={classNames(
-						"font-bold text-lg text-white mb-2 mix-blend-exclusion"
+						"font-bold text-2xl text-white mb-2 mix-blend-exclusion"
 					)}
 				>
 					{projectPath.slice(1).map((x, i) => (
@@ -126,7 +118,7 @@ export const ProjectCard = ({
 				/>
 			</div>
 			{areThereTasks && (
-				<div className="card-body p-6">
+				<div className="card-body p-6" style={{backgroundColor: `var(--background-secondary)`}}>
 					<ul>
 						{topTasks.map((task) => {
 							return (
@@ -137,8 +129,6 @@ export const ProjectCard = ({
 									)}
 								>
 									<TaskItem
-										app={app}
-										openPath={openPath}
 										task={task}
 										projectPath={projectPath}
 									/>

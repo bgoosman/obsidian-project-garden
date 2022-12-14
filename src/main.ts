@@ -1,5 +1,5 @@
 import { addIcon, Plugin } from 'obsidian';
-import { GardenView, GARDEN_VIEW_TYPE } from './GardenView';
+import { GardenView, GARDEN_VIEW_TYPE } from './components/GardenView';
 
 interface MyPluginSettings {
 	mySetting: string;

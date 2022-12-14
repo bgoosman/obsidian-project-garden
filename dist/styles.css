@@ -2321,9 +2321,9 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   line-height: 2.5rem;
 }
 
-.project-garden .text-lg {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
+.project-garden .text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
 }
 
 .project-garden .font-bold {

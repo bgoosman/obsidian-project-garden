@@ -1,24 +1,23 @@
-import { App } from "obsidian";
 import * as React from "react";
-import { ProjectCard, ProjectCardProps } from "./components/ProjectCard";
-import { cmpDateAsc, daysTil, getTaskDate, MAX_TIMESTAMP } from "./dateTime";
-import logoUrl from "./static/garden-transparent.png";
-import { cmpPriorityAsc, getTaskPriority } from "./task";
-import { OpenPath, Page, Task } from "./types";
+import { ProjectCard, ProjectCardProps } from "./ProjectCard";
+import { cmpDateAsc, daysTil, getTaskDate, MAX_TIMESTAMP } from "../datetime";
+import { cmpPriorityAsc, getTaskPriority } from "../task";
+import { Page, Task } from "../types";
 
-export type AppProps = {
-	app: App;
-	openPath: OpenPath;
-	onClickProject: (file: Page) => void;
-};
+// @ts-ignore
+import logoUrl from "../static/garden-transparent.png";
+
+export type AppProps = {};
 
 const Logo = ({ className }: { className?: string }) => (
 	<img src={logoUrl} alt="Garden" className={className} />
 );
 
-export const GardenContainer = ({ app, openPath, onClickProject }: AppProps) => {
+export const GardenContainer = ({}: AppProps) => {
 	const dv = app.plugins.plugins.dataview.api;
-	const cardProps = Array.from(dv.pages('"Projects"')).map(
+
+	// First create a project for each page in Projects/
+	const projects = Array.from(dv.pages('"Projects"')).map(
 		(page: Page): ProjectCardProps => {
 			const tasksArray = Array.from(page.file.tasks);
 			const topTasks = tasksArray
@@ -50,29 +49,38 @@ export const GardenContainer = ({ app, openPath, onClickProject }: AppProps) => 
 			const firstDueDate = topTasks[0]?.due;
 			const hasDueDate = !!firstDueDate;
 			const daysTilDue = hasDueDate ? daysTil(firstDueDate) : Infinity;
-			const props = {
-				page,
-				topTasks,
-				hasTasks: topTasks.length > 0,
+			const projectPath = page.file.link.path
+				.split("/")
+				.map((p) => p.replace(".md", ""));
+			const areThereTasks = topTasks.length > 0;
+			const {
+				file: {
+					frontmatter: { image },
+				},
+			} = page;
+			return {
+				areThereTasks,
+				daysTilDue,
+				image,
 				firstTaskDate,
 				firstDueDate,
 				hasDueDate,
-				daysTilDue,
-				openPath,
-				onClickProject,
-				app,
+				hasTasks: topTasks.length > 0,
+				page,
+				projectPath,
+				topTasks,
 			};
-			return props;
 		}
-	);
+	)
+	.filter(props => props.projectPath.length <= 2)
 
-	const maxDaysTilDue = cardProps
+	// Then sort the projects by due date
+	const maxDaysTilDue = projects
 		.filter((props) => props.hasDueDate)
 		.map((props) => props.daysTilDue)
 		.reduce((maxDays, days) => Math.max(maxDays, days), Infinity);
-	cardProps.forEach((props) => (props.maxDaysTilDue = maxDaysTilDue));
-
-	cardProps.sort((left, right) => {
+	projects.forEach((props) => (props.maxDaysTilDue = maxDaysTilDue));
+	projects.sort((left, right) => {
 		if (left.hasTasks && right.hasTasks) {
 			return cmpDateAsc(left.firstTaskDate, right.firstTaskDate);
 		} else {
@@ -89,16 +97,13 @@ export const GardenContainer = ({ app, openPath, onClickProject }: AppProps) => 
 				</div>
 			</div>
 			<div className="flex flex-wrap">
-				{cardProps.map((props) => {
-					const key = props.page.file.link.path;
-					return (
-						<ProjectCard
-							className="mr-2 mb-3"
-							key={key}
-							{...props}
-						/>
-					);
-				})}
+				{projects.map((props) => (
+					<ProjectCard
+						className="mr-2 mb-3"
+						key={props.page.file.link.path}
+						{...props}
+					/>
+				))}
 			</div>
 		</div>
 	);
